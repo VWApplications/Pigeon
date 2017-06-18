@@ -14,22 +14,22 @@ class Simple(ProducerStrategy):
 
         self.rabbitMQ = ConnectionRabbitMQ()
 
-    def send(self, message, name):
+    def send(self, message, queue):
         """
         Send a single message to the queue.
 
         Parameters:
 
             - message: Message that will be sent to the queue
-            - name: Name of the specific queue that the message should go.
+            - queue: Name of the specific queue that the message should go.
 
         Return: Nothing
         """
 
         connection = self.rabbitMQ.establish_connection()
         channel = self.rabbitMQ.create_channel(connection)
-        self.create_queue(channel, name)
-        self.queue_exchange(channel, name, message)
+        self.create_queue(channel, queue)
+        self.queue_exchange(channel, queue, message)
         self.rabbitMQ.close_connection(connection)
 
     def create_queue(self, channel, queue):

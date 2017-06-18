@@ -21,22 +21,22 @@ class PubSub(ProducerStrategy):
 
         self.rabbitMQ = ConnectionRabbitMQ()
 
-    def send(self, message, name):
+    def send(self, message, queue):
         """
         Deliver a message
 
         Parameters:
 
             - message: Message that will be published
-            - name: Name of the exchange of type fanout
+            - queue: Name of the exchange of type fanout
 
         Return: Nothing
         """
 
         connection = self.rabbitMQ.establish_connection()
         channel = self.rabbitMQ.create_channel(connection)
-        self.fanout_exchange_type_declare(channel, name)
-        self.publish_exchange_name(channel, name, message)
+        self.fanout_exchange_type_declare(channel, queue)
+        self.publish_exchange_name(channel, queue, message)
         self.rabbitMQ.close_connection(connection)
 
     def fanout_exchange_type_declare(self, channel, exchange_name):

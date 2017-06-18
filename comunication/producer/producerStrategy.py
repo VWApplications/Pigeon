@@ -8,5 +8,5 @@ class ProducerStrategy(ABC):
     """
 
     @abstractmethod
-    def send(self, message, name):
+    def send(self, message, queue):
         pass

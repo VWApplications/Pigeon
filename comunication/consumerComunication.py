@@ -24,5 +24,5 @@ class ConsumerComunication(object):
         else:
             raise NameError('Communication type not found')
 
-    def receive(self, name):
-        self.strategy.receive(name)
+    def receive(self, queue):
+        self.strategy.receive(queue)

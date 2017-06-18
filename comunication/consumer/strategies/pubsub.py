@@ -14,17 +14,23 @@ class PubSub(ConsumerStrategy):
 
         self.rabbitMQ = ConnectionRabbitMQ()
 
-    def receive(self, name):
+    def receive(self, queue):
         """
         Receive and print messages.
+
+        Parameters:
+
+            - queue: Name of the exchange of type fanout
+
+        Return: Nothing
         """
 
         connection = self.rabbitMQ.establish_connection()
         channel = self.rabbitMQ.create_channel(connection)
-        self.fanout_exchange_type_declare(channel, name)
-        queue_name = self.create_temporary_queue(channel)
-        self.binding(channel, name, queue_name)
-        self.rabbitMQ.callback_consume(channel, queue_name)
+        self.fanout_exchange_type_declare(channel, queue)
+        temporary_queue = self.create_temporary_queue(channel)
+        self.binding(channel, queue, temporary_queue)
+        self.rabbitMQ.callback_consume(channel, temporary_queue)
 
         print(' [*] Waiting for messages. To exit press CTRL+C')
 

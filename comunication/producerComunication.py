@@ -24,5 +24,5 @@ class ProducerComunication(object):
         else:
             raise NameError('Communication type not found')
 
-    def send(self, message, name):
-        self.strategy.send(message, name)
+    def send(self, message, queue):
+        self.strategy.send(message, queue)

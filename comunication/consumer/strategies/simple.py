@@ -15,7 +15,7 @@ class Simple(ConsumerStrategy):
 
         self.rabbitMQ = ConnectionRabbitMQ()
 
-    def receive(self, name):
+    def receive(self, queue):
         """
         Receive messages from the queue and print them on the screen.
 
@@ -26,8 +26,8 @@ class Simple(ConsumerStrategy):
 
         connection = self.rabbitMQ.establish_connection()
         channel = self.rabbitMQ.create_channel(connection)
-        self.create_queue(channel, name)
-        self.rabbitMQ.callback_consume(channel, name)
+        self.create_queue(channel, queue)
+        self.rabbitMQ.callback_consume(channel, queue)
 
         print(' [*] Waiting for messages. To exit press CTRL+C')
 
