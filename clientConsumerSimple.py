@@ -1,8 +1,8 @@
-from comunication.producerComunication import ProducerComunication
+from comunication.consumerComunication import ConsumerComunication
 
 
 def client():
-    producer = ProducerComunication(ProducerComunication.PUBSUB)
+    producer = ConsumerComunication(ConsumerComunication.SIMPLE)
     queue = input("Choose the comunication queue: ")
     producer.receive(queue)
 

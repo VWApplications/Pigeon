@@ -4,8 +4,7 @@ from comunication.connection import ConnectionRabbitMQ
 
 class Simple(ProducerStrategy):
     """
-    This class will receive messages from the queue and print them on the
-    screen.
+    This class will send a single message to the queue.
     """
 
     def __init__(self):
@@ -15,35 +14,56 @@ class Simple(ProducerStrategy):
 
         self.rabbitMQ = ConnectionRabbitMQ()
 
-    def receive(self, name):
+    def send(self, message, name):
         """
-        Receive messages from the queue and print them on the screen.
+        Send a single message to the queue.
 
         Parameters:
 
-            - name: Name of the specific queue that the message comes.
+            - message: Message that will be sent to the queue
+            - name: Name of the specific queue that the message should go.
+
+        Return: Nothing
         """
 
         connection = self.rabbitMQ.establish_connection()
         channel = self.rabbitMQ.create_channel(connection)
         self.create_queue(channel, name)
-        self.rabbitMQ.callback_consume(channel, name)
-
-        print(' [*] Waiting for messages. To exit press CTRL+C')
-
-        self.rabbitMQ.wait_for_data(channel)
+        self.queue_exchange(channel, name, message)
+        self.rabbitMQ.close_connection(connection)
 
     def create_queue(self, channel, queue):
         """
-        Before receive we need to make sure the recipient queue exists.
-        Create a queue to get message.
+        Before sending we need to make sure the recipient queue exists.
+        Create a queue to which the message will be delivered
+
+        Parameters:
+
+            - channel: The channel conection with the RabbitMQ server
+            - queue: Especific queue that the message should go.
+
+        Return: Nothing
+        """
+
+        channel.queue_declare(queue=queue)
+
+    def queue_exchange(self, channel, queue, message):
+        """
+        In RabbitMQ a message can never be sent directly to the queue, it always
+        needs to go through an exchange. This exchange allows us to specify
+        exactly to which queue the message should go.
 
         Parameters:
 
             - channel: The channel conection with the RabbitMQ server.
-            - queue: Queue specifies where the message will be delivered.
+            - queue: Especific queue that the message should go.
+            - message: Message that will be sent to the queue
 
         Return: Nothing.
         """
 
-        channel.queue_declare(queue=queue)
+        channel.basic_publish(exchange='',
+                              routing_key=queue,
+                              body=message)
+
+        print(" [x] Simple sent %r" % message)

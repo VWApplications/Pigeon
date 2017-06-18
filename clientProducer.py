@@ -1,19 +1,17 @@
-from comunication.consumerComunication import ConsumerComunication
+from comunication.producerComunication import ProducerComunication
 
 
 def client():
     run = True
     option = 'S'
-    consumer1 = ConsumerComunication(ConsumerComunication.SIMPLE)
-    consumer2 = ConsumerComunication(ConsumerComunication.PUBSUB)
-
-    print("Comunicação Simple")
+    producer1 = ProducerComunication(ProducerComunication.SIMPLE)
+    producer2 = ProducerComunication(ProducerComunication.PUBSUB)
 
     while(run):
         message = input("Insert the message: ")
         queue = input("Choose the communication queue: ")
-        consumer1.send(message, queue)
-        consumer2.send(message, queue)
+        producer1.send(message, queue)
+        producer2.send(message, queue)
 
         option = input("Would you like to insert another message? (S/N): ")
         if option.upper() == 'N':

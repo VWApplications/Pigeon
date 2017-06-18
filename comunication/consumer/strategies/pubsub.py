@@ -4,14 +4,7 @@ from comunication.connection import ConnectionRabbitMQ
 
 class PubSub(ConsumerStrategy):
     """
-    Simple system that emit messages In our system every running copy of the
-    receiver program will get the messages.
-
-    Essentially, published messages are going to be broadcast to all the
-    receivers.
-
-    We'll deliver a message to multiple consumers.
-    This pattern is known as "publish/subscribe".
+    Simple class that receive messages.
     """
 
     def __init__(self):
@@ -21,23 +14,21 @@ class PubSub(ConsumerStrategy):
 
         self.rabbitMQ = ConnectionRabbitMQ()
 
-    def send(self, message, name):
+    def receive(self, name):
         """
-        Deliver a message
-
-        Parameters:
-
-            - message: Message that will be published
-            - name: Name of the exchange of type fanout
-
-        Return: Nothing
+        Receive and print messages.
         """
 
         connection = self.rabbitMQ.establish_connection()
         channel = self.rabbitMQ.create_channel(connection)
         self.fanout_exchange_type_declare(channel, name)
-        self.publish_exchange_name(channel, name, message)
-        self.rabbitMQ.close_connection(connection)
+        queue_name = self.create_temporary_queue(channel)
+        self.binding(channel, name, queue_name)
+        self.rabbitMQ.callback_consume(channel, queue_name)
+
+        print(' [*] Waiting for messages. To exit press CTRL+C')
+
+        self.rabbitMQ.wait_for_data(channel)
 
     def fanout_exchange_type_declare(self, channel, exchange_name):
         """
@@ -60,22 +51,31 @@ class PubSub(ConsumerStrategy):
 
         channel.exchange_declare(exchange=exchange_name, type='fanout')
 
-    def publish_exchange_name(self, channel, exchange_name, message):
+    def create_temporary_queue(self, channel):
         """
-        Creates an exchange without a defined queue and insert a message on it
-        and print the message
+        Hear about all log messages, not just a subset of them, and it is also
+        interested only in currently flowing messages not in the old ones.
+
+        Connect to Rabbit we need a fresh, empty queue. To do it we could
+        create a queue with a random name
+
+        Once we disconnect the consumer the queue should be deleted.
 
         Parameters:
 
             - channel: The channel connection
-            - exchange_name: Name of exchange
-            - message: Message that will be published
 
-        Return: Nothing
+        Return: The random queue name
         """
 
-        channel.basic_publish(exchange=exchange_name,
-                              routing_key='',
-                              body=message)
+        result = channel.queue_declare(exclusive=True)
+        queue_name = result.method.queue
+        return queue_name
 
-        print(" [x] PubSub sent %r" % message)
+    def binding(self, channel, exchange_name, queue_name):
+        """
+        Tell the exchange to send messages to our queue. That relationship
+        between exchange and a queue is called a binding.
+        """
+
+        channel.queue_bind(exchange=exchange_name, queue=queue_name)

@@ -14,7 +14,7 @@ class ProducerComunication(object):
 
     def __init__(self, comunication):
         """
-        ProducerComunication constructor
+        ConsumerComunication constructor
         """
 
         if comunication == self.SIMPLE:
@@ -24,5 +24,5 @@ class ProducerComunication(object):
         else:
             raise NameError('Communication type not found')
 
-    def receive(self, name):
-        self.strategy.receive(name)
+    def send(self, message, name):
+        self.strategy.send(message, name)
