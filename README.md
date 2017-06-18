@@ -12,9 +12,12 @@ A producer is a user application that sends messages.
 A queue is a buffer that stores messages.
 A consumer is a user application that receives messages.
 
+
 ***
 ### How to test it
 ***
+
+This test assumes that RabbitMQ is installed and running on localhost on standard port (5672).
 
 1. Open three control terminals and run one client at each terminal
 
@@ -27,3 +30,9 @@ A consumer is a user application that receives messages.
 2. Insert the comunication queue on **clientConsumerSimple** and **clientConsumerPubSub** first
 
 3. Then, insert the message on clientProducer and the comunication queue that will be showing on Consumers
+
+***
+#### References
+***
+
+* **RabbitMQ**: https://www.rabbitmq.com/
