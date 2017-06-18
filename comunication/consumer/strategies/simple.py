@@ -21,7 +21,7 @@ class Simple(ConsumerStrategy):
         Parameters:
 
             - message: Message that will be sent to the queue
-            - name: Name of the especific queue that the message should go.
+            - name: Name of the specific queue that the message should go.
 
         Return: Nothing
         """
@@ -66,4 +66,4 @@ class Simple(ConsumerStrategy):
                               routing_key=queue,
                               body=message)
 
-        print(" [x] Sent %r" % message)
+        print(" [x] Simple sent %r" % message)

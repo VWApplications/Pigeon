@@ -1,6 +1,5 @@
 from comunication.consumer.consumerStrategy import ConsumerStrategy
 from comunication.connection import ConnectionRabbitMQ
-import sys  # Provides access to some variables used by the interpreter
 
 
 class PubSub(ConsumerStrategy):
@@ -37,11 +36,10 @@ class PubSub(ConsumerStrategy):
         connection = self.rabbitMQ.establish_connection()
         channel = self.rabbitMQ.create_channel(connection)
         self.fanout_exchange_type_declare(channel, name)
-        message = self.create_message()
         self.publish_exchange_name(channel, name, message)
         self.rabbitMQ.close_connection(connection)
 
-    def fanout_exchange_type_declare(channel, exchange_name):
+    def fanout_exchange_type_declare(self, channel, exchange_name):
         """
         Declare an exchange of type fanout that send messages to an exchange and
         the exchange must know exactly what to do with a message it receives
@@ -62,17 +60,7 @@ class PubSub(ConsumerStrategy):
 
         channel.exchange_declare(exchange=exchange_name, type='fanout')
 
-    def create_message():
-        """
-        Create a message that will be send.
-
-        Return: Message
-        """
-
-        message = ' '.join(sys.argv[1:]) or "info: Hello World!"
-        return message
-
-    def publish_exchange_name(channel, exchange_name, message):
+    def publish_exchange_name(self, channel, exchange_name, message):
         """
         Creates an exchange without a defined queue and insert a message on it
         and print the message
@@ -90,4 +78,4 @@ class PubSub(ConsumerStrategy):
                               routing_key='',
                               body=message)
 
-        print(" [x] Sent %r" % message)
+        print(" [x] PubSub sent %r" % message)
