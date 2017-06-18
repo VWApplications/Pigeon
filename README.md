@@ -18,11 +18,11 @@ A consumer is a user application that receives messages.
 
 1. Open three control terminals and run one client at each terminal
 
-  - **clientConsumerSimple** will get messages from **clientProducer** by simple type message
+    - **clientConsumerSimple** will get messages from **clientProducer** by simple type message
 
-  - **clientConsumerPubSub** will get pubsub messages from **clientProducer** by publish and subscribe type
+    - **clientConsumerPubSub** will get pubsub messages from **clientProducer** by publish and subscribe type
 
-  - **clientProducer**: will insert messages to be consumed
+    - **clientProducer**: will insert messages to be consumed
 
 2. Insert the comunication queue on **clientConsumerSimple** and **clientConsumerPubSub** first
 
