@@ -1,18 +1,10 @@
 from comunication.consumer.consumerStrategy import ConsumerStrategy
-from comunication.connection import ConnectionRabbitMQ
 
 
 class PubSub(ConsumerStrategy):
     """
     Simple class that receive messages.
     """
-
-    def __init__(self):
-        """
-        PubSub class constructor
-        """
-
-        self.rabbitMQ = ConnectionRabbitMQ()
 
     def receive(self, queue):
         """
@@ -25,18 +17,16 @@ class PubSub(ConsumerStrategy):
         Return: Nothing
         """
 
-        connection = self.rabbitMQ.establish_connection()
-        channel = self.rabbitMQ.create_channel(connection)
-        self.fanout_exchange_type_declare(channel, queue)
-        temporary_queue = self.create_temporary_queue(channel)
-        self.binding(channel, queue, temporary_queue)
-        self.rabbitMQ.callback_consume(channel, temporary_queue)
+        self.__fanout_exchange_type_declare(queue)
+        temporary_queue = self.__create_temporary_queue()
+        self.__binding(queue, temporary_queue)
+        self.callback_consume(self.channel, temporary_queue)
 
         print(' [*] Waiting for messages. To exit press CTRL+C')
 
-        self.rabbitMQ.wait_for_data(channel)
+        self.wait_for_data(self.channel)
 
-    def fanout_exchange_type_declare(self, channel, exchange_name):
+    def __fanout_exchange_type_declare(self, exchange):
         """
         Declare an exchange of type fanout that send messages to an exchange and
         the exchange must know exactly what to do with a message it receives
@@ -49,15 +39,14 @@ class PubSub(ConsumerStrategy):
 
         Parameters:
 
-            - channel: The channel connection.
-            - exchange_name: Name of the exchange of type fanout
+            - exchange: Name of the exchange of type fanout
 
         Return: Nothing
         """
 
-        channel.exchange_declare(exchange=exchange_name, type='fanout')
+        self.channel.exchange_declare(exchange=exchange, type='fanout')
 
-    def create_temporary_queue(self, channel):
+    def __create_temporary_queue(self):
         """
         Hear about all log messages, not just a subset of them, and it is also
         interested only in currently flowing messages not in the old ones.
@@ -67,21 +56,17 @@ class PubSub(ConsumerStrategy):
 
         Once we disconnect the consumer the queue should be deleted.
 
-        Parameters:
-
-            - channel: The channel connection
-
         Return: The random queue name
         """
 
-        result = channel.queue_declare(exclusive=True)
-        queue_name = result.method.queue
-        return queue_name
+        result = self.channel.queue_declare(exclusive=True)
+        temporary_queue = result.method.queue
+        return temporary_queue
 
-    def binding(self, channel, exchange_name, queue_name):
+    def __binding(self, exchange, queue):
         """
         Tell the exchange to send messages to our queue. That relationship
         between exchange and a queue is called a binding.
         """
 
-        channel.queue_bind(exchange=exchange_name, queue=queue_name)
+        self.channel.queue_bind(exchange=exchange, queue=queue)

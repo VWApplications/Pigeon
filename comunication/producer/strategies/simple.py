@@ -28,18 +28,18 @@ class Simple(ProducerStrategy):
 
         connection = self.rabbitMQ.establish_connection()
         channel = self.rabbitMQ.create_channel(connection)
-        self.create_queue(channel, queue)
-        self.queue_exchange(channel, queue, message)
+        self.__create_queue(channel, queue)
+        self.__queue_exchange(channel, queue, message)
         self.rabbitMQ.close_connection(connection)
 
-    def create_queue(self, channel, queue):
+    def __create_queue(self, channel, queue):
         """
         Before sending we need to make sure the recipient queue exists.
         Create a queue to which the message will be delivered
 
         Parameters:
 
-            - channel: The channel conection with the RabbitMQ server
+            - channel: Communication channel with the RabbitMQ server
             - queue: Especific queue that the message should go.
 
         Return: Nothing
@@ -47,7 +47,7 @@ class Simple(ProducerStrategy):
 
         channel.queue_declare(queue=queue)
 
-    def queue_exchange(self, channel, queue, message):
+    def __queue_exchange(self, channel, queue, message):
         """
         In RabbitMQ a message can never be sent directly to the queue, it always
         needs to go through an exchange. This exchange allows us to specify
@@ -55,7 +55,7 @@ class Simple(ProducerStrategy):
 
         Parameters:
 
-            - channel: The channel conection with the RabbitMQ server.
+            - channel: Communication channel with the RabbitMQ server
             - queue: Especific queue that the message should go.
             - message: Message that will be sent to the queue
 

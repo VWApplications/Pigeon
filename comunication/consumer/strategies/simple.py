@@ -1,5 +1,4 @@
 from comunication.consumer.consumerStrategy import ConsumerStrategy
-from comunication.connection import ConnectionRabbitMQ
 
 
 class Simple(ConsumerStrategy):
@@ -7,13 +6,6 @@ class Simple(ConsumerStrategy):
     This class will receive messages from the queue and print them on the
     screen.
     """
-
-    def __init__(self):
-        """
-        Simple class constructor
-        """
-
-        self.rabbitMQ = ConnectionRabbitMQ()
 
     def receive(self, queue):
         """
@@ -24,16 +16,14 @@ class Simple(ConsumerStrategy):
             - name: Name of the specific queue that the message comes.
         """
 
-        connection = self.rabbitMQ.establish_connection()
-        channel = self.rabbitMQ.create_channel(connection)
-        self.create_queue(channel, queue)
-        self.rabbitMQ.callback_consume(channel, queue)
+        self.__create_queue(queue)
+        self.callback_consume(self.channel, queue)
 
         print(' [*] Waiting for messages. To exit press CTRL+C')
 
-        self.rabbitMQ.wait_for_data(channel)
+        self.wait_for_data(self.channel)
 
-    def create_queue(self, channel, queue):
+    def __create_queue(self, queue):
         """
         Before receive we need to make sure the recipient queue exists.
         Create a queue to get message.
@@ -46,4 +36,4 @@ class Simple(ConsumerStrategy):
         Return: Nothing.
         """
 
-        channel.queue_declare(queue=queue)
+        self.channel.queue_declare(queue=queue)

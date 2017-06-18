@@ -35,11 +35,11 @@ class PubSub(ProducerStrategy):
 
         connection = self.rabbitMQ.establish_connection()
         channel = self.rabbitMQ.create_channel(connection)
-        self.fanout_exchange_type_declare(channel, queue)
-        self.publish_exchange_name(channel, queue, message)
+        self.__fanout_exchange_type_declare(channel, queue)
+        self.__publish_exchange(channel, queue, message)
         self.rabbitMQ.close_connection(connection)
 
-    def fanout_exchange_type_declare(self, channel, exchange_name):
+    def __fanout_exchange_type_declare(self, channel, exchange):
         """
         Declare an exchange of type fanout that send messages to an exchange and
         the exchange must know exactly what to do with a message it receives
@@ -52,29 +52,29 @@ class PubSub(ProducerStrategy):
 
         Parameters:
 
-            - channel: The channel connection.
-            - exchange_name: Name of the exchange of type fanout
+            - channel: Communication channel with the RabbitMQ server
+            - exchange: Name of the exchange of type fanout
 
         Return: Nothing
         """
 
-        channel.exchange_declare(exchange=exchange_name, type='fanout')
+        channel.exchange_declare(exchange=exchange, type='fanout')
 
-    def publish_exchange_name(self, channel, exchange_name, message):
+    def __publish_exchange(self, channel, exchange, message):
         """
         Creates an exchange without a defined queue and insert a message on it
         and print the message
 
         Parameters:
 
-            - channel: The channel connection
-            - exchange_name: Name of exchange
+            - channel: Communication channel with the RabbitMQ server
+            - exchange: Name of exchange
             - message: Message that will be published
 
         Return: Nothing
         """
 
-        channel.basic_publish(exchange=exchange_name,
+        channel.basic_publish(exchange=exchange,
                               routing_key='',
                               body=message)
 
