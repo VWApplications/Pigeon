@@ -14,43 +14,42 @@ class ConnectionRabbitMQ(object):
     A consumer is a user application that receives messages.
     """
 
-    def establish_connection(self):
+    def __init__(self, ip_address='localhost'):
         """
-        Establish a connection with RabbitMQ server
+        Connect with RabbitMQ server
 
-        Return: The connection with RabbitMQ server
-        """
-
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters('localhost')
-        )
-        return connection
-
-    def create_channel(self, connection):
-        """
-        Creates the communication channel with the RabbitMQ server
-
-        Parameters:
-
-            - connection: Parameter that will store the connection
-
-        Return: The channel connection
+        @Param ip_address: IP of comunication
         """
 
-        channel = connection.channel()
-        return channel
+        # Establish a connection with RabbitMQ server
+        self.connection = pika.BlockingConnection(
+                            pika.ConnectionParameters(ip_address)
+                          )
 
-    def close_connection(self, connection):
+        # Creates the communication channel with the RabbitMQ server
+        self.channel = self.connection.channel()
+
+
+    def get_channel(self):
+        """
+        Get the connection channel
+
+        @Param channel: The channel conection with the RabbitMQ server.
+
+        Return: channel connection
+        """
+
+        return self.channel
+
+    def close(self):
         """
         Before exiting the program we need to make sure the network buffers were
         flushed and our message was actually delivered to RabbitMQ. We can do it
         by gently closing the connection
 
-        Parameters:
-
-            - connection: Parameter that will store the connection
+        @Param connection: Parameter that will store the connection
 
         Return: Nothing
         """
 
-        connection.close()
+        self.connection.close()

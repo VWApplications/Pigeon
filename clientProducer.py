@@ -1,11 +1,15 @@
 from comunication.producerComunication import ProducerComunication
+from comunication.connection import ConnectionRabbitMQ
 
 
 def client():
     run = True
     option = 'S'
-    producer1 = ProducerComunication(ProducerComunication.SIMPLE)
-    producer2 = ProducerComunication(ProducerComunication.PUBSUB)
+
+    connection = ConnectionRabbitMQ('localhost')
+    channel = connection.get_channel()
+    producer1 = ProducerComunication(ProducerComunication.SIMPLE, channel)
+    producer2 = ProducerComunication(ProducerComunication.PUBSUB, channel)
 
     while(run):
         message = input("Insert the message: ")
@@ -15,6 +19,7 @@ def client():
 
         option = input("Would you like to insert another message? (S/N): ")
         if option.upper() == 'N':
+            connection.close()
             run = False
 
 if __name__ == '__main__':

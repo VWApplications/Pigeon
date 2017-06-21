@@ -10,9 +10,7 @@ class PubSub(ConsumerStrategy):
         """
         Receive and print messages.
 
-        Parameters:
-
-            - queue: Name of the exchange of type fanout
+        @Param queue: Name of the exchange of type fanout
 
         Return: Nothing
         """
@@ -20,11 +18,11 @@ class PubSub(ConsumerStrategy):
         self.__fanout_exchange_type_declare(queue)
         temporary_queue = self.__create_temporary_queue()
         self.__binding(queue, temporary_queue)
-        self.callback_consume(self.channel, temporary_queue)
+        self.callback_consume(temporary_queue)
 
         print(' [*] Waiting for messages. To exit press CTRL+C')
 
-        self.wait_for_data(self.channel)
+        self.wait_for_data()
 
     def __fanout_exchange_type_declare(self, exchange):
         """
@@ -37,9 +35,7 @@ class PubSub(ConsumerStrategy):
         The rules for that are defined by the exchange type (fanout) it just
         broadcasts all the messages it receives to all the queues it knows.
 
-        Parameters:
-
-            - exchange: Name of the exchange of type fanout
+        @Param exchange: Name of the exchange of type fanout
 
         Return: Nothing
         """
@@ -67,6 +63,11 @@ class PubSub(ConsumerStrategy):
         """
         Tell the exchange to send messages to our queue. That relationship
         between exchange and a queue is called a binding.
+
+        @Param exchange: Name of the exchange of type fanout
+        @Param queue: Name of the exchange of type fanout
+
+        Return: Nothing
         """
 
         self.channel.queue_bind(exchange=exchange, queue=queue)

@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from comunication.connection import ConnectionRabbitMQ
 
 
 class ConsumerStrategy(ABC):
@@ -8,14 +7,14 @@ class ConsumerStrategy(ABC):
     between consumer and producer.
     """
 
-    def __init__(self):
+    def __init__(self, channel):
         """
         ConsumerStrategy class constructor
+
+        @Param channel: The channel conection with the RabbitMQ server.
         """
 
-        self.rabbitMQ = ConnectionRabbitMQ()
-        self.connection = self.rabbitMQ.establish_connection()
-        self.channel = self.rabbitMQ.create_channel(self.connection)
+        self.channel = channel
 
     @abstractmethod
     def receive(self, name):
@@ -33,24 +32,21 @@ class ConsumerStrategy(ABC):
 
         print(" [x] Received %r" % body)
 
-    def callback_consume(self, channel, queue):
+    def callback_consume(self, queue):
         """
         We need to tell RabbitMQ that this particular callback function should
         receive messages from our queue.
 
-        Parameters:
-
-            - channel: The channel conection with the RabbitMQ server.
-            - queue: Queue specifies where the message will be consumed.
+        @Param queue: Queue specifies where the message will be consumed.
 
         Return: Nothing.
         """
 
-        channel.basic_consume(self.__callback,
-                              queue=queue,
-                              no_ack=True)
+        self.channel.basic_consume(self.__callback,
+                                   queue=queue,
+                                   no_ack=True)
 
-    def wait_for_data(self, channel):
+    def wait_for_data(self):
         """
         We enter a never-ending loop that waits for data and runs callbacks
         whenever necessary.
@@ -58,4 +54,4 @@ class ConsumerStrategy(ABC):
         Return: Nothing.
         """
 
-        channel.start_consuming()
+        self.channel.start_consuming()

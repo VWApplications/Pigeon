@@ -11,27 +11,24 @@ class Simple(ConsumerStrategy):
         """
         Receive messages from the queue and print them on the screen.
 
-        Parameters:
+        @Param name: Name of the specific queue that the message comes.
 
-            - name: Name of the specific queue that the message comes.
+        Return: Nothing
         """
 
         self.__create_queue(queue)
-        self.callback_consume(self.channel, queue)
+        self.callback_consume(queue)
 
         print(' [*] Waiting for messages. To exit press CTRL+C')
 
-        self.wait_for_data(self.channel)
+        self.wait_for_data()
 
     def __create_queue(self, queue):
         """
         Before receive we need to make sure the recipient queue exists.
         Create a queue to get message.
 
-        Parameters:
-
-            - channel: The channel conection with the RabbitMQ server.
-            - queue: Queue specifies where the message will be delivered.
+        @Param queue: Queue specifies where the message will be delivered.
 
         Return: Nothing.
         """

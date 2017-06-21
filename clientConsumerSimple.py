@@ -2,7 +2,7 @@ from comunication.consumerComunication import ConsumerComunication
 
 
 def client():
-    producer = ConsumerComunication(ConsumerComunication.SIMPLE)
+    producer = ConsumerComunication(ConsumerComunication.SIMPLE, 'localhost')
     queue = input("Choose the comunication queue: ")
     producer.receive(queue)
 
