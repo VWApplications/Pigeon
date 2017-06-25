@@ -16,13 +16,4 @@ class ProducerStrategy(ABC):
 
     @abstractmethod
     def send(self, message, queue):
-        """
-        Send a single message to the queue.
-
-        @Param message: Message that will be sent to the queue
-        @Param queue: Name of the specific queue that the message should go.
-
-        Return: Nothing
-        """
-
         pass

@@ -24,13 +24,7 @@ class Simple(ConsumerStrategy):
         self.wait_for_data()
 
     def __create_queue(self, queue):
-        """
-        Before receive we need to make sure the recipient queue exists.
-        Create a queue to get message.
-
-        @Param queue: Queue specifies where the message will be delivered.
-
-        Return: Nothing.
-        """
+        # Before receive we need to make sure the recipient queue exists.
+        # Create a queue to get message.
 
         self.channel.queue_declare(queue=queue)

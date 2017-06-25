@@ -20,28 +20,15 @@ class Simple(ProducerStrategy):
         self.__queue_exchange(queue, message)
 
     def __create_queue(self, queue):
-        """
-        Before sending we need to make sure the recipient queue exists.
-        Create a queue to which the message will be delivered
-
-        @Param queue: Especific queue that the message should go.
-
-        Return: Nothing
-        """
+        # Before sending we need to make sure the recipient queue exists.
+        # Create a queue to which the message will be delivered
 
         self.channel.queue_declare(queue=queue)
 
     def __queue_exchange(self, queue, message):
-        """
-        In RabbitMQ a message can never be sent directly to the queue, it always
-        needs to go through an exchange. This exchange allows us to specify
-        exactly to which queue the message should go.
-
-        @Param queue: Especific queue that the message should go.
-        @Param message: Message that will be sent to the queue
-
-        Return: Nothing.
-        """
+        # In RabbitMQ a message can never be sent directly to the queue, it always
+        # needs to go through an exchange. This exchange allows us to specify
+        # exactly to which queue the message should go.
 
         self.channel.basic_publish(exchange='',
                                    routing_key=queue,

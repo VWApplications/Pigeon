@@ -20,18 +20,6 @@ class ConsumerStrategy(ABC):
     def receive(self, name):
         pass
 
-    def __callback(self, ch, method, properties, body):
-        """
-        It works by subscribing a callback function to a queue.
-        Whenever we receive a message, this callback function is called by the
-        Pika library. In our case this function will print on the screen the
-        contents of the message.
-
-        Return: Nothing.
-        """
-
-        print(" [x] Received %r" % body)
-
     def callback_consume(self, queue):
         """
         We need to tell RabbitMQ that this particular callback function should
@@ -55,3 +43,12 @@ class ConsumerStrategy(ABC):
         """
 
         self.channel.start_consuming()
+
+    def __callback(self, ch, method, properties, body):
+        # It works by subscribing a callback function to a queue.
+        # Whenever we receive a message, this callback function is called by the
+        # Pika library. In our case this function will print on the screen the
+        # contents of the message.
+
+        print(" [x] Received %r" % body)
+

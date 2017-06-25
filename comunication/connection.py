@@ -3,6 +3,8 @@ import pika  # Python client recommended by the RabbitMQ
 
 class ConnectionRabbitMQ(object):
     """
+    Connection to RabbitMQ message broker.
+
     RabbitMQ is a message broker: it accepts and forwards messages. You can
     think about it as a post office: when you put the mail that you want posting
     in a post box, you can be sure that Mr. Postman will eventually deliver the
@@ -16,7 +18,7 @@ class ConnectionRabbitMQ(object):
 
     def __init__(self, ip_address='localhost'):
         """
-        Connect with RabbitMQ server
+        Connect with RabbitMQ server.
 
         @Param ip_address: IP of comunication
         """
@@ -32,7 +34,7 @@ class ConnectionRabbitMQ(object):
 
     def get_channel(self):
         """
-        Get the connection channel
+        Get the connection channel.
 
         @Param channel: The channel conection with the RabbitMQ server.
 
@@ -43,6 +45,8 @@ class ConnectionRabbitMQ(object):
 
     def close(self):
         """
+        Close the connection.
+
         Before exiting the program we need to make sure the network buffers were
         flushed and our message was actually delivered to RabbitMQ. We can do it
         by gently closing the connection
