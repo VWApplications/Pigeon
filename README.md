@@ -19,17 +19,21 @@ A consumer is a user application that receives messages.
 
 This test assumes that RabbitMQ is installed and running on localhost on standard port (5672).
 
-1. Open three control terminals and run one client at each terminal
+1. Open two control terminals and run one client at each terminal
 
-    - **clientConsumerSimple** will get messages from **clientProducer** by simple type message
-
-    - **clientConsumerPubSub** will get pubsub messages from **clientProducer** by publish and subscribe type
+    - **clientConsumer** will get messages from **clientProducer**
 
     - **clientProducer**: will insert messages to be consumed
 
-2. Insert the comunication queue on **clientConsumerSimple** and **clientConsumerPubSub** first
+2. Insert the comunication queue on **clientConsumer** first
 
-3. Then, insert the message on clientProducer and the comunication queue that will be showing on Consumers
+3. Then, insert the message on **clientProducer** and the comunication queue that will be showing on Consumers
+
+* **Obs**: If you want to change the connection type, in the client files change from SIMPLE to the other one you want
+
+  - SIMPLE
+  - PUBSUB
+  - ...
 
 ***
 #### References
