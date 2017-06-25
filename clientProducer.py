@@ -8,7 +8,7 @@ def client():
 
     connection = ConnectionRabbitMQ('localhost')
     channel = connection.get_channel()
-    producer = ProducerComunication(ProducerComunication.PUBSUB, channel)
+    producer = ProducerComunication(ProducerComunication.SIMPLE, channel)
 
     while(run):
         message = input("Insert the message: ")
